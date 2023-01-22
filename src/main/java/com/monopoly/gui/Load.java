@@ -380,7 +380,7 @@ public final class Load implements Currency
         t.setHeaderText("   ");
         t.setContentText(x[next].Name+" paid entry tax and now has "+x[next].Balance);
         t.setTitle("DEBT COLLECTOR");
-        t.getDialogPane().setStyle("#ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
+        t.getDialogPane().setStyle("-fx-background-color:#ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
         t.show();
         }
         if(x[next].move ==38) {
