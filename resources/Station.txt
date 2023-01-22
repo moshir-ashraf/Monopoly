@@ -1,0 +1,17 @@
+Main Library
+5
+324.79999999999995
+664.8
+Pharma Garden
+15
+58.4
+380.0
+N Library
+25
+324.79999999999995
+95.2
+Football field and Basketball court
+35
+592.8
+380.0
+
