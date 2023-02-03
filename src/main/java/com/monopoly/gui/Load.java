@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.TextAlignment;
 
 import java.io.*;
@@ -18,19 +17,8 @@ import java.util.Scanner;
 import static java.lang.System.exit;
 public final class Load implements Currency
 {
-   static Scanner input = new Scanner(System.in);
     static int numofplayers,maxAt,next;
-    static Color propertycolor[] = new Color[8];
-    public static boolean Continue() throws ClassNotFoundException{
-        System.out.println("\t New Game\tor\t Continue");
-        String y = input.nextLine();
-        if(y.equalsIgnoreCase("Continue")) return true;
-        if((y.equalsIgnoreCase("new game"))||(y.equalsIgnoreCase("newgame"))) return false;
-        else {
-            System.out.println("\tNew Game is chosen by default");
-            return false;
-        }
-    }
+    static Color[] propertycolor = new Color[8];
     public static Color[] getcolors (){
         return propertycolor;}
     public static int wish(Alert alert,Property y, Player x, int indexofowner, Label info){
@@ -176,7 +164,7 @@ public final class Load implements Currency
       x[7] = new Color('v',y);
       propertycolor = x;
      }
-     public static  void turn(Player[] player, Property property[], Station[] station, Service[] service,Dice a,Dice b,VBox v, Alert t,Label info) throws IOException{
+     public static  void turn(Player[] player, Property[] property, Station[] station, Service[] service, Dice a, Dice b, VBox v, Alert t, Label info) throws IOException{
           if(propertyexist(player, property) != -1) {
           v.getChildren().clear();v.getChildren().add(property[propertyexist(player, property)].image());
      if(wish(t,property[propertyexist(player, property)], player[next],  checkforownership(player, property, station, service),info)== -1){
@@ -186,13 +174,17 @@ public final class Load implements Currency
         t.setHeaderText(property[propertyexist(player, property)].PropertyName+ " is already owned by you");
         t.getDialogPane().getButtonTypes().clear();
         ButtonType yes = new ButtonType("UPGRADE");
+        ButtonType remove = new ButtonType("DEGRADE");
         ButtonType sell = new ButtonType("SELL");
         ButtonType no = new ButtonType("DECLINE");
-        t.getDialogPane().getButtonTypes().addAll(yes,no,sell);
+        t.getDialogPane().getButtonTypes().addAll(yes,remove,no,sell);
         t.getDialogPane().setStyle("-fx-background-color: #f5f7f7; -fx-font-family : 'Algerian';");
         t.showAndWait();
         if(t.getResult().equals(yes)){
            try{ player[next].buildupgrade(property[propertyexist(player, property)].index,info);}catch(Exception e ){info.setText(property[propertyexist(player, property)].PropertyName+" cannot be upgraded any further");}
+        }
+        if(t.getResult().equals(yes)){
+            try{ player[next].removeupgrade(property[propertyexist(player, property)].index,info);}catch(Exception e ){info.setText(property[propertyexist(player, property)].PropertyName+" cannot be upgraded any further");}
         }
         else if(t.getResult().equals(sell)){
             player[next].sell(property[propertyexist(player, property)],property[propertyexist(player, property)].PropertyWorth);
@@ -249,7 +241,7 @@ public final class Load implements Currency
         t.getDialogPane().setStyle("-fx-background-color: #f5f7f7; -fx-text-fill: #9b0807; -fx-font-family : 'Algerian';");
         t.showAndWait();
         if(t.getResult().equals(yes)){
-            player[next].payrent(player[checkforownership(player, property, station, service)], player[checkforownership(player, property, station, service)].scount.indexOf(station[stationexist(player, station)]));
+            player[next].payrent(player[checkforownership(player, property, station, service)], String.valueOf(player[checkforownership(player, property, station, service)].scount.indexOf(station[stationexist(player, station)])));
             info.setText(player[next].Name+" paid "+station[stationexist(player, station)].getrent(player[next]) +" to " + player[checkforownership(player, property, station, service)].Name);
         }
         else {t.close(); save(player); System.out.println("BYE BYE");exit(0);}  
@@ -297,7 +289,7 @@ public final class Load implements Currency
       } catch (IOException ex) {System.out.println(ex);}
          return (numofplayers = count);
      }
-     public static Player[] assign(Player[] x,String [] t, Circle [] c, int [] j) throws IOException{
+     public static Player[] assign(Player[] x,String [] t, int [] j) {
            for(int i = 0; i<numofplayers; i++){
         x[i] = new Player(t[i]);
         x[i].circle_index = j[i];
@@ -328,11 +320,6 @@ public final class Load implements Currency
          if(next==-1) next = maxAt;
          return next;
      }
-     public static void leave(){
-         System.out.println("\tDo you wish to exit\nYes/No");
-         String x = input.nextLine();
-         if(x.equalsIgnoreCase("yes")) exit(0);
-     }
      public static int propertyexist(Player [] x,Property[] y ){
          for(int i =0; i<22; i++) {if(y[i].index == x[next].move) return i;}
          return -1;
@@ -352,11 +339,7 @@ public final class Load implements Currency
         return -1;
      }
      public static void notabuilding(Player[] x, int num, Alert t, Label info){
-         double cx,cy;
         if((x[next].move == 2)||(x[next].move == 17)||(x[next].move == 33)){
-            if(x[next].move == 2){cx = 472.79999999999995;cy=671.1999999999999;} 
-            if(x[next].move == 17){cx = 55.199999999999996;cy=276.0;} 
-            if(x[next].move == 33){cx =588.0;cy=276.0 ;}
              t.setTitle("Community Chest Card");
              t.getDialogPane().setContent(Community.pic[num]);
              t.getDialogPane().setStyle(" ;-fx-background-color :#91ccea;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
@@ -364,9 +347,6 @@ public final class Load implements Currency
              Community.drawcard(x[next], x ,numofplayers,num);
         }
         if((x[next].move == 7)||(x[next].move == 22)||(x[next].move == 36)) {
-            if(x[next].move == 7){cx =225.6;cy=669.5999999999999;} 
-            if(x[next].move == 22){cx =77.6;cy=98.39999999999999;} 
-            if(x[next].move == 36){cx =590.4;cy=435.2;}
              t.setTitle("Chance Card");
              t.getDialogPane().setContent(Chance.pic[num]);
              t.getDialogPane().setStyle("-fx-background-color :#ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
@@ -374,17 +354,15 @@ public final class Load implements Currency
              Chance.drawcard(x[next], x ,numofplayers,num,info);
         }
         if(x[next].move ==4)  {
-            cx = 373.59999999999997; cy = 669.5999999999999;
         x[next].collect(-Entry);
         t = new Alert(AlertType.INFORMATION);
         t.setHeaderText("   ");
         t.setContentText(x[next].Name+" paid entry tax and now has "+x[next].Balance);
         t.setTitle("DEBT COLLECTOR");
-        t.getDialogPane().setStyle("#ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
+        t.getDialogPane().setStyle("-fx-background-color:#ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
         t.show();
         }
         if(x[next].move ==38) {
-           cx = 592.0; cy = 540.8; 
         x[next].collect(-Iced_coffee);
         t = new Alert(AlertType.INFORMATION);
         t.setHeaderText("   ");
@@ -393,18 +371,12 @@ public final class Load implements Currency
         t.getDialogPane().setStyle("-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
         t.show();
         }
-        if(x[next].move ==10) {
-            cx =73.6; cy = 645.5999999999999;
+        if(x[next].move ==10)
             info.setText(x[next].Name+" is visiting during summer course" );
-        }
-        if(x[next].move ==30){
-            cx = 586.4; cy =100.8;
+        if(x[next].move ==30)
             x[next].gotosummercourse();
-        }
-        if(x[next].move ==20) {
-            cx =58.4; cy = 99.2;
+        if(x[next].move ==20)
             info.setText(x[next].Name+" is chilling at the balaa'a" );
-        }  
      }
      public static boolean game(Player[]x, Pane p, VBox [] v){  
          Alert t = new Alert(AlertType.INFORMATION);

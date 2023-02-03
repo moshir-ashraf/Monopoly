@@ -1,6 +1,5 @@
 package com.monopoly.gui;
 public interface Currency {
- int Gum = 1;   
  int Redbull = 50;
  int SarookhFromShabrawy = 10;
  int Entry = 200;

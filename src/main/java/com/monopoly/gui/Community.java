@@ -1,7 +1,6 @@
 package com.monopoly.gui;
 import java.io.*;
 import java.util.*;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 public class Community extends Cell{
@@ -38,7 +37,7 @@ public class Community extends Cell{
       arr[15]=Iced_coffee;
     } 
    
-    public static void drawcard(Player x, Player y[], int n, int num){
+    public static void drawcard(Player x, Player[] y, int n, int num){
        System.out.println(x.Name+" drew a Community Chest Card "); 
        System.out.println(community[num]);
        if ((num!=8)&&(num!=13)&&(num!=4)) {x.collect(arr[num]); System.out.println(x.Name+" new balance is "+x.Balance);}
@@ -46,7 +45,7 @@ public class Community extends Cell{
        if(num ==4 ){ x.passcard=true; x.getoutofsummercourse(); }
        if(num == 8) {
           x.collect(SarookhFromShabrawy*(n-1));
-        for(int i =0; i<n; i++) if(x.toString().equals(y[i].toString())!=true){ y[i].collect(-SarookhFromShabrawy);System.out.println(y[i].Name+" new balance is "+y[i].Balance); }
+        for(int i =0; i<n; i++) if(!x.toString().equals(y[i].toString())){ y[i].collect(-SarookhFromShabrawy);System.out.println(y[i].Name+" new balance is "+y[i].Balance); }
         System.out.println(x.Name+" new balance is "+x.Balance); 
        }
     }

@@ -3,6 +3,8 @@ package com.monopoly.gui;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
+
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 public final class Property extends Cell implements Serializable {
@@ -68,12 +70,12 @@ public final class Property extends Cell implements Serializable {
         rent -= floor.rent_addition;
         maxup=false;
     }
-    public void removeroom(){
+    public void removeroom(Label l){
        if(count == 1) rent -= room1.rent_addition;
        if(count == 2) rent -= room2.rent_addition;
        if(count == 3) rent -= room3.rent_addition;
        if(count == 4) rent -= room4.rent_addition;
        if(count > 4) removefloor();
-       else System.out.println("No more upgrades to remove");
+       else l.setText("No more upgrades to remove");
     }
 }

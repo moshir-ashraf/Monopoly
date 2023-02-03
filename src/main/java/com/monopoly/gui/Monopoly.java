@@ -37,18 +37,10 @@ public class Monopoly extends Application
 
     static
     {
-        Platform.runLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Monopoly.myStage = new Stage();
-            }
-        });
+        Platform.runLater(() -> Monopoly.myStage = new Stage());
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException
-    {
+    public static void main(String[] args) throws IOException {
         initialize();
         property = Load.assign(property);
         station = Load.assign(station);
@@ -260,14 +252,9 @@ public class Monopoly extends Application
         return stage;
     }
 
-    void initialize(Label[] l)
-    {
-        for (int i = 0; i < l.length; i++) l[i] = new Label();
-    }
-
     static void initialize()
     {
-        for (int i = 0; i < circles.length; i++) circles[i] = new Circle(1 * i, 0, 50);
+        for (int i = 0; i < circles.length; i++) circles[i] = new Circle(i, 0, 50);
         circles[0].setFill(javafx.scene.paint.Color.rgb(245, 39, 108));
         circles[1].setFill(javafx.scene.paint.Color.rgb(255, 192, 66));
         circles[2].setFill(javafx.scene.paint.Color.rgb(15, 122, 67));
@@ -283,7 +270,7 @@ public class Monopoly extends Application
     boolean number(CheckBox[] c, TextField[] t) throws IOException
     {
         int count = 0;
-        int j[] = new int[4];
+        int[] j = new int[4];
         for (int i = 0; i < c.length; i++)
         {
             if (c[i].isSelected())
@@ -305,12 +292,12 @@ public class Monopoly extends Application
         {
             Load.getnumofplayers(count);
             player = new Player[count];
-            String names[] = new String[count];
+            String[] names = new String[count];
             for (int i = 0; i < count; i++)
             {
                 names[i] = t[j[i]].getText();
             }
-            Load.assign(player, names, circles, j);
+            Load.assign(player, names, j);
             return true;
         }
     }
@@ -338,11 +325,11 @@ public class Monopoly extends Application
         setdimensions(die);
         Alert cc = new Alert(AlertType.INFORMATION);
         cc.getDialogPane().getButtonTypes().clear();
-        ButtonType ok = new ButtonType("OKEAH !");
+        ButtonType ok = new ButtonType("OKAY !");
         cc.getDialogPane().getButtonTypes().add(ok);
         cc.setGraphic(null);
         cc.setHeaderText("  ");
-        VBox v[] = new VBox[Load.numofplayers];
+        VBox[] v = new VBox[Load.numofplayers];
         Button exit = new Button("Exit");
         setcolor(exit);
         roll.setOnAction(e -> {
@@ -366,9 +353,6 @@ public class Monopoly extends Application
                     Load.turn(player, property, station, service, a, b, card, cc, info);
                     label[Load.next].setText(player[Load.next].Name + " : " + player[Load.next].Balance + "$");
 
-                } catch (FileNotFoundException ex)
-                {
-                    System.out.println(ex);
                 } catch (IOException ex)
                 {
                     System.out.println(ex);
@@ -491,9 +475,7 @@ public class Monopoly extends Application
             v.setStyle("-fx-background-color: #dcfbcb ");
             Scene scene = new Scene(v, 400, 500);
             s.setScene(scene);
-            close.setOnAction(value -> {
-                s.close();
-            });
+            close.setOnAction(value -> s.close());
             next.setOnAction(value -> {
                 if (images.indexOf(h.getChildren().get(1)) == images.size() - 1)
                 {

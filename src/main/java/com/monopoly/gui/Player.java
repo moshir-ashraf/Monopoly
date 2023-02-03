@@ -1,6 +1,4 @@
 package com.monopoly.gui;
-import java.util.ArrayList;
-import java.io.Serializable;
 
 import javafx.animation.TranslateTransition;
 import javafx.scene.control.Alert;
@@ -10,6 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 public class Player implements Serializable  {
     int prev;
      int Balance ;
@@ -22,30 +23,16 @@ public class Player implements Serializable  {
      int injail;
      int circle_index;
      boolean passcard = false;
-     Player(Player x){
-      this.Name = x.Name;
-      this.Balance = x.Balance;
-         this.move = x.move;
-         owned =  x.owned;
-         scount = x.scount;
-         bcount = x.bcount;
-         colors = x.colors; 
-         injail = x.injail;
-         circle_index = x.circle_index;
-     };
-     Player(String Name){
+    Player(String Name){
          this.Name = Name;
          Balance = 1300;
          move = 0;
-         owned.clear();
-         scount.clear();
-         bcount.clear();
          colors = Load.getcolors();
          injail = 0;
          prev = 0;
      }
 
-    public Circle getCircle(Circle c[]) {
+    public Circle getCircle(Circle[] c) {
         c[circle_index].setRadius(35);
         return c[circle_index];
     }
@@ -110,23 +97,24 @@ public class Player implements Serializable  {
          l.setText(owned.get(z).PropertyName+" is successfully upgraded");
      } else l.setText(Name+" must buy property before attempting to upgrade");
      }
-     public void removeupgrade(int index){
-         if((index>=owned.size())){System.out.println(Name+" does not own this property");
+     public void removeupgrade(int index, Label l){
+         if((index>=owned.size())){l.setText(Name+" does not own this property");
          return;
       }
           if(owned.contains(owned.get(index))) {
-         owned.get(index).removeroom();
+         owned.get(index).removeroom(l);
          owned.get(index).count--;
          Balance+= owned.get(index).cost;
-     }System.out.println(Name+" must buy property before attempting to remove upgrade");
+     }l.setText(Name+" must buy property before attempting to remove upgrade");
      }
      public void payperupgrade(int a,int b){
          int tr=0,tf=0;
-         for(int i = 0; i<owned.size();i++){
-           tr += owned.get(i).count;
-           if(owned.get(i).maxup==true) {
-             tf++; tr--;
-           }  
+         for (Property property : owned) {
+             tr += property.count;
+             if (property.maxup) {
+                 tf++;
+                 tr--;
+             }
          }
          Balance -= (a*tr);
          Balance -= (b*tf);
@@ -150,10 +138,10 @@ public class Player implements Serializable  {
      }
      public void gotosummercourse(){
         Alert t = new Alert(AlertType.NONE);
-        t.getDialogPane().setStyle("#ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
+        t.getDialogPane().setStyle("-fx-background-color: #ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
         t.setTitle("Summer Course");
         t.setHeaderText("F");
-         if(passcard == false){
+         if(!passcard){
           t.setAlertType(AlertType.WARNING);
          if(injail>2) {getoutofsummercourse(); return;}
          else if(injail == 0){
@@ -172,7 +160,7 @@ public class Player implements Serializable  {
              ButtonType use = new ButtonType("USE");
              ButtonType wait = new ButtonType("FAIL");
              t.getDialogPane().getButtonTypes().addAll(use,wait);
-             t.getDialogPane().setStyle("#ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
+             t.getDialogPane().setStyle("-fx-background-color: #ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
              t.show();
              if(t.getResult().equals(use)){t.close(); passcard = false; getoutofsummercourse();}
               else{
@@ -191,7 +179,7 @@ public class Player implements Serializable  {
      }
      public void getoutofsummercourse(){
         Alert t = new Alert(AlertType.INFORMATION);
-        t.getDialogPane().setStyle("#ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
+        t.getDialogPane().setStyle("-fx-background-color: #ef7e2e;-fx-text-fill: #000000; -fx-font-family : 'Algerian';");
         t.setTitle("Summer Course");
         t.setHeaderText("PASSED");
          if(injail >0) {
